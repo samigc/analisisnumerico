@@ -1,0 +1,32 @@
+
+
+border cercle(t=0,2*pi){ x=cos(t);y=sin(t);label=1;}
+mesh Th=buildmesh(cercle(40));
+plot(Th,wait=1);
+
+fespace Ph(Th,P0);
+fespace Vh(Th,P1);
+fespace V2h(Th,P2);
+
+
+V2h u,v;
+func f=1/t;
+real c=2;
+int t=1;
+//double *a;
+//a=new double []
+
+//for (t=1;t<20;t++)
+//{
+problem wave(u,v,solver=CG)= int2d(Th)(dx(u)*dx(v)+dy(u)*dy(v))
++int2d(Th)(-f*v) + on(1,u=0);
+
+
+
+//cout<<u<<endl;
+real cpu=clock();
+wave;
+plot (u,wait=1);
+
+cout<<clock()<<endl;
+//+u*v*(1/(2*t*c^2)

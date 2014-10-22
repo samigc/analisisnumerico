@@ -1,0 +1,20 @@
+verbosity=1;
+real T=5000.,dt=5.; 	// Finale Time and time step
+macro v0 [0,-1.] 		// Intial velocity
+mesh Sh; 				// Building the mesh
+real L=10,H=1,dn=5;
+Sh=square(L*dn,H*dn,[x*L,y*H]);
+macro u [u1,u2] 		// state
+macro up [up1,up2] 		// previous state
+macro upp [upp1,upp2] 	// previous previous state
+macro v [v1,v2] 		// end of macro
+macro e(u) [dx(u[0]),(dx(u[1])+dy(u[0]))/ sqrt(2),dy(u[1])] // macro
+macro A [[2.*mu+lambda,0,lambda],[0,2.*mu,0],[lambda,0,2.*mu+lambda]] //
+plot(Sh, wait=1);
+
+fespace Vh(Sh,RT0); // vectorial FE space
+Vh u,up,upp,v;
+real mu=1,lambda=1;
+real t;
+cout<<A*e(u)'<<endl;
+

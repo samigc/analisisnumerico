@@ -1,0 +1,22 @@
+mesh Th=square(3,3);
+fespace Vh(Th,P1);
+Vh u;
+int i,n=u.n;
+u=0;
+for (i=0;i<n;i++)
+			// all degree of freedom
+{
+u[][i]=1;
+			// the basic function i
+plot(u,wait=1);
+mesh Sh1=trunc(Th,abs(u)>1.e-10,split=5,label=2);
+//plot(Th,Sh1,wait=1); // plot the mesh of
+
+u[][i]=0;
+			// reset
+}
+{
+ofstream u1data("u1.txt");
+u1data << u[];
+
+}

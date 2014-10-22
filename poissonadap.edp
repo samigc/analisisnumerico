@@ -1,0 +1,30 @@
+int n=5;
+mesh Th=square(n,n,[100*x,50*y]);// Malla inicial uniforme en [0,10]x[0,5]
+plot(Th,wait=1);
+fespace Vh(Th,P1);
+Vh u=0,v=0,zero=0;
+func f=-sin(x*y);
+func g=x+y;
+int i=0;
+real error=0.1, coef=0.1^(1./5.);
+real cpu=clock();
+problem Problem1(u,v,solver=CG,init=i,eps=-1.0e-6)=
+int2d(Th)( dx(u)*dx(v)+dy(u)*dy(v)) +int2d(Th)( v*f)
++on(1,2,3,4,u=g);
+Problem1;
+plot(u,zero,wait=1);
+Th= adaptmesh(Th,u,inquire=1,err=error);
+real d=clock();
+cout << " CPU = "<<cpu -d <<endl;
+for (i=1;i<5;i++)
+{
+Problem1;
+plot(Th,u,zero,wait=1);
+Th= adaptmesh(Th,u,inquire=1,err=error);
+cout << " CPU = "<<clock() -d <<endl;
+d=clock();
+error=error*coef;
+};
+cout << " CPU = "<<clock() -cpu <<endl;
+//plot(Th,u,zero,wait=1);
+//plot(Th,wait=1);

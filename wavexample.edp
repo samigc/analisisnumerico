@@ -1,0 +1,36 @@
+verbosity=0;
+load "ffmsh3"
+load "ffmedit"
+real Dx=.02,Dy=.02;
+mesh Th=square(floor(1./Dx),floor(1./Dy));
+fespace Vh(Th,P1);  
+func g=0.;
+real c=1.,dt=.01,Tf=4.;
+Vh uh,vh,uh0=sin(pi*x)*sin(pi*y),uh1=uh0+dt*g;
+macro Grad(u)[dx(u),dy(u)]//
+problem tambour(uh,vh) = int2d(Th)(uh*vh + Grad(uh)'*Grad(vh)*(c*dt)^2*.5 )
+                    + int2d(Th)(Grad(uh0)'*Grad(vh)*(c*dt)^2*.5 ) 
+                    - int2d(Th)(2.*uh1*vh - uh0*vh)
+                    + on(1,2,3,4,uh=0);
+int kk=0,k=0;
+for (real t=0.;t<Tf;t+=dt) {
+  tambour;
+  uh0 = uh1;
+  uh1 = uh; 
+  if ( !(kk % 20)){        plot(uh,cmm="t="+t,fill=true,value=true,wait=1,dim=3,boundary=false);
+     // pour visualiser la solution avec Medit
+     mesh3 TK=movemesh23(Th,transfo=[x,y,uh/2.]);
+     medit("Solution",TK);
+     savemesh(TK,"Ondes2D."+(100000+k)+".mesh");
+     // pour visualiser la solution avec Mathématica
+     { ofstream ff("Ondes2D."+(100000+k)+".txt");
+     for (int i=0;i<Th.nt;i++){
+        for (int j=0; j <3; j++)
+           ff<<Th[i][j].x << " "<< Th[i][j].y<< " "<<uh[][Vh(i,j)]<<endl;
+        ff<<Th[i][0].x << " "<< Th[i][0].y<< " "<<uh[][Vh(i,0)]<<"\n";
+     }
+     }
+     k++;
+  }
+  kk++;
+}

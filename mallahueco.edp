@@ -1,0 +1,12 @@
+real pi=4*atan(1.0);
+border a(t=0,2*pi)
+{
+x=cos(t);y=sin(t);label=1;
+}
+border b(t=0,2*pi)
+{
+x=.01*cos(t);y=.01*sin(t);label=2;
+}
+mesh thwithouthole=buildmesh(a(100)+b(-10));
+
+plot(thwithouthole,wait=1);

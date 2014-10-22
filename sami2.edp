@@ -1,0 +1,71 @@
+verbosity=1;
+real T=5000.,dt=1.; 	// Finale Time and time step
+real v0=10; 		// Intial velocity
+
+real pi=4*atan(1.0);
+
+//border a(t=0,2*pi) { x=5*cos(t);y=2*sin(t);label=1;}
+//border b(t=0,2*pi) { x=3*cos(t);y=1*sin(t);label=2;}
+//mesh Sh=buildmesh(a(100)+b(-50));
+//mesh Sh=buildmesh(a(300));
+
+int n=20,m=5;
+
+
+border C01(t=0,1){x = 0; y = -5+5*t; label = 1;}
+border C02(t=0,1){x = 5-5*t; y = -5; label = 2;}
+border C03(t=0,1){x = 5; y = -5*t; label = 3;}
+border C04(t=0,1){x = 3+2*t; y = 0; label = 4;}
+border C05(t=0,1){x = 3; y = -3.5*t; label = 5;}
+border C052(t=0,1){x = 3; y = -3.5-0.5*t; label = 6;}
+border C051(t=0,1){x = 3; y = -4-0.5*t; label = 6;}
+border C06(t=0,1){x = 2+t; y = -4.5; label = 7;}
+border C07(t=0,1){x = 2; y = -4.5+0.5*t; label = 8;}
+border C071(t=0,1){x = 2; y = -4+0.5*t; label = 9;}
+border C072(t=0,1){x = 2; y = -3.5+3.5*t; label = 9;}
+border C08(t=0,1){x = 2*t; y = 0; label = 10;}
+border C09(t=0,1){x = 2+t; y = -4; label = 11;}
+border C10(t=0,1){x = 2+t; y = -3.5; label = 11;}
+
+mesh Sh = buildmesh(C01(-n)+C02(-n)+C03(-n)+C04(-n)+C05(n)+C052(m)+C051(m)+C06(-m)+
+C07(m)+C071(m)+C072(n)+C08(-n)+C09(m)+C10(-m));
+plot(Sh,wait=1);
+
+
+
+macro u [u1,u2] 		// state
+macro up [up1,up2] 		// previous state
+macro upp [upp1,upp2] 	// previous previous state
+macro v [v1,v2] 		// end of macro
+macro e(u) [dx(u[0]),dy(u[1])] //
+macro uh [uh1,uh2] 		// state
+
+fespace Vh(Sh,RT0); // vectorial FE space
+Vh u,up,upp,v,uh;
+
+upp=[0.,0.];			 // Initialization of states
+up=upp+[dt*v0,dt*v0];
+
+for (int i=0;i<50;i++)
+{
+
+problem Wave(u,v,init=1)=
+int2d(Sh)(((u1*v1+u2*v2)/(dt^2)+ v0^2*(dx(u1)*dx(v1)+dy(u2)*dy(v2))))
++int2d(Sh)((2*up1*v1+up2*v2-(upp1*v1+upp2*v2))/(dt^2))
++on(1,2,3,u1=0,u2=0);
+
+mesh Sh=adaptmesh(Sh,u,inquire=1);
+
+Wave;
+
+uh=u;
+upp=up;up=u;
+plot(uh,wait=0);
+
+
+}
+
+//plot(u,wait=0);
+ 
+
+

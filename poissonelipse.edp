@@ -1,0 +1,38 @@
+border a(t=0,2*pi){x=2*cos(t);y=sin(t);label=5;};
+mesh Th= buildmesh (a(150));
+
+fespace Vh(Th,P2);
+
+Vh u=0, v=0;
+Vh zero=0;
+real error=0.1, coef=0.1^(1./5.);
+
+int i=0;
+
+func f=sin(x*y);
+problem laplace(u,v) =
+int2d(Th)(dx(u)*dx(v)+dy(u)*dy(v)) //bilinear part
+-int2d(Th)(f*v)
+// right hand side
++on(5,u=0);
+// Dirichlet boundary condition
+
+Th= adaptmesh(Th,u,inquire=1,err=error);
+
+
+
+for (i=1;i<5;i++)
+{
+laplace;
+plot(Th,u,zero,wait=1);
+Th= adaptmesh(Th,u,inquire=1,err=error);
+
+
+error=error*coef;
+};
+
+//real cpu=clock();
+//laplace;
+//solve the pde
+plot(u,wait=1,ps="u-Poisson-elipse.eps");
+

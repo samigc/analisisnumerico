@@ -1,0 +1,38 @@
+verbosity=1;
+real T=5000.,dt=5.; 	// Finale Time and time step
+macro v0 [0,-1.] 		// Intial velocity
+mesh Sh; 				// Building the mesh
+real L=10,H=1,dn=5;
+Sh=square(L*dn,H*dn,[x*L,y*H]);
+macro u [u1,u2] 		// state
+macro up [up1,up2] 		// previous state
+macro upp [upp1,upp2] 	// previous previous state
+macro v [v1,v2] 		// end of macro
+macro e(u) [dx(u[0]),(dx(u[1])+dy(u[0]))/ sqrt(2),dy(u[1])] //
+macro A [[2.*mu+lambda,0,lambda],[0,2.*mu,0],[lambda,0,2.*mu+lambda]] //
+plot(Sh, wait=1);
+
+fespace Vh(Sh,RT0); // vectorial FE space
+Vh u,up,upp,v;
+real mu=1,lambda=1;
+real t;
+problem OneStepElasticity(u,v,init=t)=
+int2d(Sh)((u'*v)/(dt^2)+(A*e(u))'*e(v))
++int2d(Sh)((upp'*v-2.*(up'*v))/(dt^2))
++on(4,u1=0,u2=0);
+upp=[0.,0.];			 // Initialization of states
+up=upp+[dt*v0[0],dt*v0[1]];
+
+
+
+real delta=0.00000001; 		// exageration of the displacement
+for(t=0;t<T;t+=dt)
+{
+
+
+mesh Th=movemesh(Sh,[x+delta*u[0],y+delta*u[1]]);
+plot(Th,bb=[[0,-3.*H],[LPÑPÑPÑ.3,4.*H]],wait=0);
+OneStepElasticity;
+plot(u,wait=1);
+upp=up;up=u;
+}

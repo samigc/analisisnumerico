@@ -1,0 +1,56 @@
+
+real T=5000.,dt=0.01; 	// Finale Time and time step
+real v0=10;		// Intial velocity
+
+
+
+
+//border a(t=0,2*pi) { x=5*cos(t);y=2*sin(t);label=1;}
+//border b(t=0,2*pi) { x=cos(t);y=sin(t);label=2;}
+//mesh Sh=buildmesh(a(100)+b());
+//mesh Sh=buildmesh(a(300));
+
+int n=20,m=5;
+
+border C01(t=0,1){x = 0; y = -8*t; label = 1;}
+border C02(t=0,1){x = 5-5*t; y = -8; label = 2;}
+border C03(t=0,1){x = 5; y = -8*t; label = 3;}
+
+border C04(t=0,1){x = 3 + 2*t; y = 0; label = 4;}
+
+border C05(t=0,1){x = 3; y = -t; label = 5;}
+border C051(t=0,1){x = 3; y = -1-t; label = 6;}
+border C052(t=0,1){x = 3; y = -2-t; label = 7;}
+border C053(t=0,1){x = 3; y = -3-t; label = 7;}
+border C054(t=0,1){x = 3; y = -4-t; label = 7;}
+border C055(t=0,1){x = 3; y = -5-t; label = 7;}
+border C056(t=0,1){x = 3; y = -6-t; label = 7;}
+
+
+border C06(t=0,1){x = 2+t; y = -7; label = 8;}
+
+border C07(t=0,1){x = 2; y = -7+t; label = 9;}
+border C071(t=0,1){x = 2; y = -6+t; label = 10;}
+border C072(t=0,1){x = 2; y = -5+t; label = 11;}
+border C073(t=0,1){x = 2; y = -4+t; label = 11;}
+border C074(t=0,1){x = 2; y = -3+t; label = 11;}
+border C075(t=0,1){x = 2; y = -2+t; label = 11;}
+border C076(t=0,1){x = 2; y = -1+t; label = 11;}
+
+border C08(t=0,1){x = 2*t; y = 0; label = 12;}
+
+border C09(t=0,1){x = 2+t; y = (-6); label = 13;}
+border C091(t=0,1){x = 2+t; y = (-5); label = 14;}
+border C092(t=0,1){x = 2+t; y = (-4); label = 14;}
+border C093(t=0,1){x = 2+t; y = (-3); label = 14;}
+border C094(t=0,1){x = 2+t; y = (-2); label = 14;}
+border C095(t=0,1){x = 2+t; y = (-1); label = 14;}
+
+mesh Sh = buildmesh(C01(n)+C02(-n)+C03(-n)+C04(-n)
++C05(m)+C051(m)+C052(m)+C053(m)+C054(m)+C055(m)+C056(m)
++C06(-m)
++C07(m)+C071(m)+C072(m)+C073(m)+C074(m)+C075(m)+C076(m)
++C08(-n)
++C09(m)+C091(-m)+C092(m)+C093(-m)+C094(m)+C095(-m));
+
+plot(Sh,wait=1);

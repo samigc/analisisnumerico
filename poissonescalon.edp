@@ -1,0 +1,20 @@
+real v1=4,v2=6,w=v1+v2;
+border a(t=0,v1){x=t;y=0;label=1;}; //lado y=0, x en [0,v1]
+border b(t=0,1){x=v1;y=-t;label=2;};//lado x=v1, y en [0,-1]
+border c(t=0,v2){x=v1+t;y=-1;label=3;}; //lado y=-1, x en [v1,w]
+border d(t=0,2){x=w;y=-1+t;label=4;};//lado x=w, y en [-1,1]
+border e(t=0,w){x=w-t;y=1;label=5;};//lado y=1, x en [0,w]
+border ff(t=0,1){x=0;y=1-t;label=6;};//lado x=0, y en [1,0]
+int n=10;
+mesh th=buildmesh(a(10*n)+b(5*n)+c(10*n)+d(10*n)+e(4*n)+ff(5*n));
+
+
+fespace Vh(th,P1);
+Vh u,v;
+func f=0;
+problem laplace(u,v) =int2d(th)(dx(u)*dx(v)+dy(u)*dy(v)) // bilinear part
++int2d(th)(-f*v)
+// right hand side
++on(1,2,3,4,u=0)+on(5,u=1)+on(6,u=0);// Dirichlet boundary condition
+laplace; //solve the pde
+plot(u,wait=1);
